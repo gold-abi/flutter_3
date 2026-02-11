@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Student Record',
+      theme: ThemeData(primarySwatch: Colors.indigo),
+      home: StudentApp(),
+    );
+  }
+}
+class StudentApp extends StatefulWidget {
+  @override
+  StudentAppState createState() => StudentAppState();
+}
+
+class StudentAppState extends State<StudentApp> {
+  final nameController = TextEditingController();
+  final rollController = TextEditingController();
+  final classController = TextEditingController();
+  final attendanceController = TextEditingController();
+
+  // Student list
+  List<Map<String, String>> students = [];
+  void addStudent() {
+    setState(() {
+      students.add({
+        'name': nameController.text,
+        'roll': rollController.text,
+        'class': classController.text,
+        'attendance': attendanceController.text,
+      });
+    });
+
+    nameController.clear();
+    rollController.clear();
+    classController.clear();
+    attendanceController.clear();
+  }
+  void deleteStudent(int index) {
+    setState(() {
+      students.removeAt(index);
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Student Record Management'),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Student Name'),
+            ),
+            TextField(
+              controller: rollController,
+              decoration: InputDecoration(labelText: 'Roll Number'),
+            ),
+            TextField(
+              controller: classController,
+              decoration: InputDecoration(labelText: 'Class'),
+            ),
+            TextField(
+              controller: attendanceController,
+              decoration: InputDecoration(labelText: 'Attendance %'),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: addStudent,
+              child: Text('Add Student'),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: students.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: Colors.indigo[50],
+                    child: ListTile(
+                      title: Text(students[index]['name']!),
+                      subtitle: Text(
+                        'Roll: ${students[index]['roll']} | '
+                        'Class: ${students[index]['class']} | '
+                        'Attendance: ${students[index]['attendance']}%',
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => deleteStudent(index),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
